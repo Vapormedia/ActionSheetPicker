@@ -41,7 +41,7 @@
 + (id)showPickerWithTitle:(NSString *)title rows:(NSArray *)strings initialSelection:(NSInteger)index doneBlock:(ActionStringDoneBlock)doneBlock cancelBlock:(ActionStringCancelBlock)cancelBlockOrNil origin:(id)origin {
     ActionSheetStringPicker * picker = [[ActionSheetStringPicker alloc] initWithTitle:title rows:strings initialSelection:index doneBlock:doneBlock cancelBlock:cancelBlockOrNil origin:origin];
     [picker showActionSheetPicker];
-    return [picker autorelease];
+    return picker;
 }
 
 - (id)initWithTitle:(NSString *)title rows:(NSArray *)strings initialSelection:(NSInteger)index doneBlock:(ActionStringDoneBlock)doneBlock cancelBlock:(ActionStringCancelBlock)cancelBlockOrNil origin:(id)origin {
@@ -54,7 +54,7 @@
 }
 
 + (id)showPickerWithTitle:(NSString *)title rows:(NSArray *)data initialSelection:(NSInteger)index target:(id)target successAction:(SEL)successAction cancelAction:(SEL)cancelActionOrNil origin:(id)origin {
-    ActionSheetStringPicker *picker = [[[ActionSheetStringPicker alloc] initWithTitle:title rows:data initialSelection:index target:target successAction:successAction cancelAction:cancelActionOrNil origin:origin] autorelease];
+    ActionSheetStringPicker *picker = [[ActionSheetStringPicker alloc] initWithTitle:title rows:data initialSelection:index target:target successAction:successAction cancelAction:cancelActionOrNil origin:origin];
     [picker showActionSheetPicker];
     return picker;
 }
@@ -70,19 +70,14 @@
 }
 
 - (void)dealloc {
-    self.data = nil;
-    
-    Block_release(_onActionSheetDone);
-    Block_release(_onActionSheetCancel);
-    
-    [super dealloc];
+    self.data = nil;    
 }
 
 - (UIView *)configuredPickerView {
     if (!self.data)
         return nil;
     CGRect pickerFrame = CGRectMake(0, 40, self.viewSize.width, 216);
-    UIPickerView *stringPicker = [[[UIPickerView alloc] initWithFrame:pickerFrame] autorelease];
+    UIPickerView *stringPicker = [[UIPickerView alloc] initWithFrame:pickerFrame];
     stringPicker.delegate = self;
     stringPicker.dataSource = self;
     stringPicker.showsSelectionIndicator = YES;
@@ -143,18 +138,14 @@
 
 - (void)setOnActionSheetDone:(ActionStringDoneBlock)onActionSheetDone {
     if (_onActionSheetDone) {
-        Block_release(_onActionSheetDone);
         _onActionSheetDone = nil;
     }
-    _onActionSheetDone = Block_copy(onActionSheetDone);
 }
 
 - (void)setOnActionSheetCancel:(ActionStringCancelBlock)onActionSheetCancel {
     if (_onActionSheetCancel) {
-        Block_release(_onActionSheetCancel);
         _onActionSheetCancel = nil;
     }
-    _onActionSheetCancel = Block_copy(onActionSheetCancel);
 }
 
 @end
